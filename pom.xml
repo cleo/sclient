@@ -20,7 +20,7 @@
     <repository>
       <id>github</id>
       <name>GitHub Cleo Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/cleodev/${project.name}</url>
+      <url>https://maven.pkg.github.com/cleo/${project.name}</url>
     </repository>
   </distributionManagement>
 
@@ -37,7 +37,11 @@
     <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
     <maven.jar.plugin.version>3.3.0</maven.jar.plugin.version>
     <maven.shade.plugin.version>3.4.1</maven.shade.plugin.version>
+    <maven.deploy.plugin.version>3.1.0</maven.deploy.plugin.version>
+    <jib.maven.plugin.version>3.3.1</jib.maven.plugin.version>
     <really.executable.jar.maven.plugin.version>2.0.0</really.executable.jar.maven.plugin.version>
+    <github.release.plugin.version>1.4.0</github.release.plugin.version>
+    <github.release.artifact>sclient</github.release.artifact>
   </properties>
 
   <dependencies>
@@ -142,7 +146,7 @@
 
           <!-- (optional) name for binary executable, if not set will just -->
           <!-- make the regular jar artifact executable -->
-          <programFile>sclient</programFile>
+          <programFile>${github.release.artifact}</programFile>
 
           <!-- (optional) support other packaging formats than jar -->
           <!-- <allowOtherTypes>true</allowOtherTypes> -->
@@ -162,6 +166,63 @@
             <goals>
               <goal>really-executable-jar</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven.deploy.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>deploy-file</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/sclient</file>
+              <groupId>com.cleo.labs</groupId>
+              <artifactId>sclient-cli</artifactId>
+              <repositoryId>github</repositoryId>
+              <url>https://maven.pkg.github.com/cleo/${project.name}</url>
+              <generatePom>false</generatePom>
+              <packaging></packaging>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      -->
+      <plugin>
+        <groupId>de.jutzig</groupId>
+        <artifactId>github-release-plugin</artifactId>
+        <version>${github.release.plugin.version}</version>
+        <configuration>
+          <description>Release ${project.version}</description>
+          <releaseName>${project.version}</releaseName>
+          <tag>${project.version}</tag>
+          <fileSets>
+            <fileSet>
+              <directory>${project.build.directory}</directory>
+              <includes>
+                <include>${github.release.artifact}</include>
+              </includes>
+            </fileSet>
+          </fileSets>
+        </configuration>
+        <executions>
+          <execution>
+            <id>github-upload</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>release</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <releaseName>${github.release}</releaseName>
+              <tag>${github.tag}</tag>
+              <overwriteArtifact>true</overwriteArtifact>
+            </configuration>
           </execution>
         </executions>
       </plugin>

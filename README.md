@@ -25,14 +25,21 @@ command, which can display the certificate chain presented by a TLS server durin
 connection handshake.
 By importing the appropriate root into the list of trusted roots, requirement #1 can be satisfied.
 
+Download sclient from [https://github.com/cleo/sclient/releases/download/1.0.0/sclient](https://github.com/cleo/sclient/releases/download/1.0.0/sclient), for example:
+
+```
+wget https://github.com/cleo/sclient/releases/download/1.0.0/sclient
+chmod a+x sclient
+```
+
 ## `sclient` Usage
 
-The `sclient` tool is packaged as an executable Java `jar`
-`java -jar sclient-1.0.0-cli.jar`
-and also with a wrapper script
-`./sclient`.
+The `sclient` tool is packaged as an executable Java `jar`  
+`java -jar sclient-1.0.0-cli.jar`  
+which is also wrapped with a launcher script that makes it directly executable  
+`./sclient-1.0.0-cli.jar`.
 
-Type `./sclient --help` for a summary of command line usage:
+Type `./sclient-1.0.0-cli.jar --help` for a summary of command line usage:
 
 ```
 Usage: sclient [-?dV] [--chain] [--showcerts] [-c=host:port] [-h=host]
@@ -61,7 +68,7 @@ To test the condfiguration of your `java` environment vis-a-vis connection to
 a TLS server, use `--default` or `-d`:
 
 ```
-./sclient --connect host:port -d
+./sclient-1.0.0-cli.jar --connect host:port -d
 ```
 
 If the connection succeeds, the command returns silently and the return code is `0`.
@@ -118,7 +125,7 @@ Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to
 To display the certificate chain presented by a TLS server, use `--chain`:
 
 ```
-./sclient --connect cleointegration.cloud --chain
+./sclient-1.0.0-cli.jar --connect cleointegration.cloud --chain
 ```
 
 Displays the Subject `s:` and Issuer `i:` names
@@ -146,7 +153,7 @@ Certificate chain
 If you include `--showcerts`, the certificates themselves will be included in the output.
 
 ```
-./sclient --connect cleointegration.cloud --chain --showcerts
+./sclient-1.0.0-cli.jar --connect cleointegration.cloud --chain --showcerts
 ```
 
 Displays:
@@ -224,7 +231,7 @@ leave the keystore password as its default `changeit` either.)
 After importing the root into `cacerts`, a subsequent test using `-d` should succeed:
 
 ```
-if ./sclient --connect host:port -d 2> /dev/null; then echo "worked"; else echo "failed"; fi
+if ./sclient-1.0.0-cli.jar --connect host:port -d 2> /dev/null; then echo "worked"; else echo "failed"; fi
 ```
 
 You can remove the certificate from the trusted roots using the alias you assigned
